@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -28,11 +29,13 @@ X_sample = pd.DataFrame(
     [[T, P, HOA, MP, UCV, D, ASA, AVAF]],
     columns=feature_names)
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, "assets", "model.json")
 
 #function to make prediction
 def predict_model(X):   
     model = XGBRegressor()
-    model.load_model("assets\model.json")
+    model.load_model(model_path)
     output=model.predict(X)
     return (output)
 
@@ -40,7 +43,7 @@ def predict_model(X):
 #function to explain the prediction
 def explain_model(X):
     model = XGBRegressor()
-    model.load_model("assets\model.json")
+    model.load_model(model_path)
     explainer = shap.TreeExplainer(model)
     sv = explainer(X)
     st.subheader("Waterfall plot for feature contribution")
@@ -59,7 +62,7 @@ if st.button("Predict"):
 if st.session_state.prediction is not None:
     st.success(f"The predicted uptake is: {st.session_state.prediction[0]:.3f}")
 
-    if st.button("Show SHAP Plot"):
+    if st.button("Explain prediction"):
         explain_model(X_sample)
 
 
