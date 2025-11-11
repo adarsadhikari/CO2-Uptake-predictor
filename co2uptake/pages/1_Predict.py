@@ -30,7 +30,9 @@ X_sample = pd.DataFrame(
     columns=feature_names)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(current_dir, "assets", "model.json")
+assets_dir = os.path.join(current_dir, "..", "assets")
+model_path = os.path.join(assets_dir, "model.json")
+
 model = XGBRegressor()
 model.load_model(model_path)
 #function to make prediction
