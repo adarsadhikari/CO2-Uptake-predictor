@@ -59,12 +59,13 @@ if st.button("Predict"):
     st.session_state.prediction = predict_model(X_sample)
 
 if st.session_state.prediction is not None:
-    st.success(f"The predicted uptake is: {st.session_state.prediction[0]:.3f}")
+    st.success(f"The predicted uptake is: {st.session_state.prediction[0]:.3f} mmol/g")
 
     if st.button("Explain prediction"):
         explain_model(X_sample)
 
 
         
+
 
     
