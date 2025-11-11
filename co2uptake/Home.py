@@ -10,7 +10,7 @@ Welcome to the **CO₂ Uptake Predictor** — an interactive machine learning to
 the **CO₂ adsorption capacity** of **Metal–Organic Frameworks (MOFs)** based on their key structural 
 and thermodynamic properties.""")
 current_dir = os.path.dirname(__file__)
-image_path = os.path.join(current_dir, "assets", "Waterfall.jpg")
+image_path = os.path.join(current_dir, "assets", "Waterfll.jpg")
 # st.image("assets/Waterfll.jpg", width="stretch", caption="An example of a waterfall plot")
 st.image(image_path, use_column_width=True, caption="An example of a waterfall plot")
 
