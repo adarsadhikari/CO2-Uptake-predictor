@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 
 st.set_page_config(page_title="Home", layout="centered")
@@ -8,8 +9,10 @@ st.markdown("""
 Welcome to the **CO₂ Uptake Predictor** — an interactive machine learning tool designed to estimate 
 the **CO₂ adsorption capacity** of **Metal–Organic Frameworks (MOFs)** based on their key structural 
 and thermodynamic properties.""")
-
-st.image("assets/Waterfll.jpg", width="stretch", caption="An example of a waterfall plot")
+current_dir = os.path.dirname(__file__)
+image_path = os.path.join(current_dir, "assets", "Waterfall.jpg")
+# st.image("assets/Waterfll.jpg", width="stretch", caption="An example of a waterfall plot")
+st.image(image_path, use_column_width=True, caption="An example of a waterfall plot")
 
 st.markdown("""
 ---
