@@ -9,7 +9,7 @@ Welcome to the **CO₂ Uptake Predictor** — an interactive machine learning to
 the **CO₂ adsorption capacity** of **Metal–Organic Frameworks (MOFs)** based on their key structural 
 and thermodynamic properties.""")
 
-st.image("assets\Waterfll.jpg", width="stretch", caption="An example of a waterfall plot")
+st.image("assets/Waterfll.jpg", width="stretch", caption="An example of a waterfall plot")
 
 st.markdown("""
 ---
