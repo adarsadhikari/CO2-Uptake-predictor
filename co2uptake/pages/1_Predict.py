@@ -31,19 +31,16 @@ X_sample = pd.DataFrame(
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(current_dir, "assets", "model.json")
-
+model = XGBRegressor()
+model.load_model(model_path)
 #function to make prediction
 def predict_model(X):   
-    model = XGBRegressor()
-    model.load_model(model_path)
     output=model.predict(X)
     return (output)
 
 
 #function to explain the prediction
 def explain_model(X):
-    model = XGBRegressor()
-    model.load_model(model_path)
     explainer = shap.TreeExplainer(model)
     sv = explainer(X)
     st.subheader("Waterfall plot for feature contribution")
