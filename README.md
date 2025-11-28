@@ -2,7 +2,7 @@
 
 Welcome to the CO₂ Uptake Predictor — an interactive machine learning tool designed to estimate the CO₂ adsorption capacity of Metal–Organic Frameworks (MOFs) based on their features.
 
-🌐 **Try the Web App:** 👉 <a href="https://co2uptake.streamlit.app/" target="_blank">CO₂ Uptake Predictor Web App</a>
+🌐 **Try the Web App:** 👉 [CO₂ Uptake Predictor Web App](https://co2uptake.streamlit.app/)
 
 # 📘 Overview
 
