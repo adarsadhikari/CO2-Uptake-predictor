@@ -12,7 +12,7 @@ and thermodynamic properties.""")
 current_dir = os.path.dirname(__file__)
 image_path = os.path.join(current_dir, "assets", "Waterfll.jpg")
 # st.image("assets/Waterfll.jpg", width="stretch", caption="An example of a waterfall plot")
-st.image(image_path, use_column_width=True, caption="An example of a waterfall plot")
+st.image(image_path, width='stretch', caption="An example of a waterfall plot")
 
 st.markdown("""
 ---
