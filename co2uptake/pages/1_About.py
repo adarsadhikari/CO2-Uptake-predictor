@@ -56,8 +56,10 @@ This makes the model’s reasoning **transparent** — you can see *why* it pred
 ---
 
 ### ⚙️ **How to Use**
-1. Go to the **Predict** page.  
-2. Enter the values.  
+1. Go to the **Home** page.  
+2. Choose how you want to provide features:
+    - **Generate From Database** → Automatically load a feature set from the database.
+    - **Enter Features Manually** → Type in the feature values yourself. 
 3. Click **Predict** to see the predicted CO₂ uptake.  
 4. Click **Explain Prediction** to visualize how each feature influenced the prediction.
 
@@ -71,4 +73,5 @@ It’s not just a predictor, but also an **explainable AI** system for scientifi
 
 ---
 """)
+
 
