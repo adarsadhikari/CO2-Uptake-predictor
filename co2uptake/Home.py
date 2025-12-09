@@ -1,74 +1,143 @@
 import os
 import streamlit as st
-
-st.set_page_config(page_title="Home", layout="centered")
+import numpy as np
+import pandas as pd
+from xgboost import XGBRegressor
+import shap
+import matplotlib.pyplot as plt
 
 st.title("Predict CO2 Uptake")
 
-st.markdown("""
-Welcome to the **CO₂ Uptake Predictor** — an interactive machine learning tool designed to estimate 
-the **CO₂ adsorption capacity** of **Metal–Organic Frameworks (MOFs)** based on their key structural 
-and thermodynamic properties.""")
-current_dir = os.path.dirname(__file__)
-image_path = os.path.join(current_dir, "assets", "Waterfll.jpg")
-# st.image("assets/Waterfll.jpg", width="stretch", caption="An example of a waterfall plot")
-st.image(image_path, width='stretch', caption="An example of a waterfall plot")
+#defining directory path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+assets_dir = os.path.join(current_dir, "assets")
+model_path = os.path.join(assets_dir, "model.json")
+samplefile_path = os.path.join(assets_dir, "sample.csv")
 
-st.markdown("""
----
+model = XGBRegressor()
+model.load_model(model_path)
 
-### 🔍 **What does this app do?**
-This application allows you to input eight important material features such as:
+#function to make prediction
+def predict_model(X):   
+    output=model.predict(X)
+    return (output)
 
-- **Temperature (K)**  
-- **Pressure (bar)**  
-- **Heat of adsorption (kcal/mol)**  
-- **Metal percentage (%)**  
-- **Unit cell volume (Å³)**  
-- **Density (g/cm³)**  
-- **Accessible surface area (Å²)**  
-- **Accessible void area fraction**
+#function to explain the prediction
+def explain_model(X):
+    explainer = shap.TreeExplainer(model)
+    sv = explainer(X)
+    st.subheader("Waterfall plot for feature contribution")
+    fig, ax = plt.subplots(figsize=(6, 4))
+    shap.plots.waterfall(sv[0],show=False)
+    st.pyplot(fig)
 
-Based on these inputs, it predicts the **CO₂ uptake capacity** 
-of the MOF.
+# Initialize session state
+if "randval" not in st.session_state:
+    st.session_state.randval = None
 
----
+if "prediction" not in st.session_state:
+    st.session_state.prediction = None
 
-### 📈 **Beyond Prediction — Understanding the Model**
+if "prev_mode" not in st.session_state:
+    st.session_state.prev_mode = None
 
-Simply predicting a value isn’t enough to trust a machine learning model.  
-That’s why this app goes one step further: it **explains the model’s decision**.
+#select options      
+colA, colB = st.columns(2)
 
-After generating a prediction, you can click **“Explain Prediction”** to view a **SHAP Waterfall Plot**.
+with colA:
+    random_btn = st.button("Generate features from database")
+with colB:
+    manual_btn = st.button("Enter features manually")
 
----
+if "mode" not in st.session_state:
+    st.session_state.mode = None
+if "prev_mode" not in st.session_state:
+    st.session_state.prev_mode = None
 
-### 🌊 **What is a Waterfall Plot?**
+if random_btn:
+    st.session_state.mode = "random"
+elif manual_btn:
+    st.session_state.mode = "manual"
 
-A **SHAP (SHapley Additive exPlanations)** waterfall plot breaks down the prediction into **individual feature contributions**.
+mode = st.session_state.mode
 
-- Features that **increase** the predicted CO₂ uptake are shown in **red** (positive impact).  
-- Features that **decrease** it are shown in **blue** (negative impact).  
-- The combined effect of these contributions results in the final prediction.
+# Reset prediction + random value when mode changes
+if mode != st.session_state.prev_mode:
+    st.session_state.prediction = None
+    st.session_state.randval = None
+    st.session_state.prev_mode = mode
 
-This makes the model’s reasoning **transparent** — you can see *why* it predicted a certain uptake value for your input conditions.
+# --- RANDOM MODE ---
+if mode == "random":
 
----
+    df = pd.read_csv(samplefile_path)
 
-### ⚙️ **How to Use**
-1. Go to the **Predict** page.  
-2. Enter the values.  
-3. Click **Predict** to see the predicted CO₂ uptake.  
-4. Click **Explain Prediction** to visualize how each feature influenced the prediction.
+    if random_btn:
+        st.session_state.randval = df.sample()
+        st.session_state.prediction = None
 
----
+    if st.session_state.randval is not None:
+        randval = st.session_state.randval
+        st.write(randval.drop(['Adsorption'], axis=1))
 
-### 💡 **Goal of this Project**
+        column1, column2 = st.columns(2)
+        with column1:
+            T = st.number_input("Temperature (K)", value=randval['T'].iloc[0], disabled=True)
+            HOA = st.number_input("Heat of adsorption (kcal/mol)", value=randval['HOA'].iloc[0], disabled=True)
+            UCV = st.number_input("Unit cell volume (Å³)", value=randval['UCV'].iloc[0], disabled=True)
+            ASA = st.number_input("Accessible surface area (Å²)", value=randval['ASA'].iloc[0], disabled=True)
 
-This tool demonstrates how **machine learning** can assist researchers in understanding which factors most strongly affect CO₂ uptake performance in MOFs.
+        with column2:
+            P = st.number_input("Pressure (bar)", value=randval['P'].iloc[0], disabled=True)
+            MP = st.number_input("Metal percentage", value=randval['M%'].iloc[0], disabled=True)
+            D = st.number_input("Density (g/cm³)", value=randval['D'].iloc[0], disabled=True)
+            AVAF = st.number_input("Accessible void area fraction", value=randval['AVAF'].iloc[0], disabled=True)
 
-It’s not just a predictor, but also an **explainable AI** system for scientific insight.
+        X_sample = randval.drop(['Filename', 'Adsorption'], axis=1)
 
----
-""")
+        if st.button("Predict"):
+            st.session_state.prediction = predict_model(X_sample)
 
+        if st.session_state.prediction is not None:
+            st.success(f"The actual uptake is: {randval['Adsorption'].iloc[0]:.3f} mmol/g")
+            st.success(f"The predicted uptake is: {st.session_state.prediction[0]:.3f} mmol/g")
+
+            if st.button("Explain prediction"):
+                explain_model(X_sample)
+
+# --- MANUAL MODE ---
+elif mode == "manual":
+
+    st.write("Enter input values to make a prediction:")
+
+    column1, column2 = st.columns(2)
+    with column1:
+        T = st.number_input("Temperature (K)", value=298.0)
+        HOA = st.number_input("Heat of adsorption (kcal/mol)", value=1.39)
+        UCV = st.number_input("Unit cell volume (Å³)", value=401.46)
+        ASA = st.number_input("Accessible surface area (Å²)", value=9.7)
+
+    with column2:
+        P = st.number_input("Pressure (bar)", value=0.1)
+        MP = st.number_input("Metal percentage", value=0.47)
+        D = st.number_input("Density (g/cm³)", value=0.1)
+        AVAF = st.number_input("Accessible void area fraction", value=0.14)
+
+    X_sample = pd.DataFrame([[T, P, HOA, MP, UCV, D, ASA, AVAF]],
+                            columns=['T', 'P', 'HOA', 'M%', 'UCV', 'D', 'ASA', 'AVAF'])
+
+    inputs = [T, P, HOA, MP, UCV, D, ASA, AVAF]
+
+    if st.button("Predict"):
+        if any(val <= 0 for val in inputs):
+            st.warning("All input values must be greater than 0.")
+            st.session_state.prediction = None
+            st.stop()
+
+        st.session_state.prediction = predict_model(X_sample)
+
+    if st.session_state.prediction is not None:
+        st.success(f"The predicted uptake is: {st.session_state.prediction[0]:.3f} mmol/g")
+
+        if st.button("Explain prediction"):
+            explain_model(X_sample)
