@@ -3,7 +3,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Home", layout="centered")
 
-st.title("Predict CO2 Uptake")
+st.title("Predict CO₂ Uptake")
 
 st.markdown("""
 Welcome to the **CO₂ Uptake Predictor** — an interactive machine learning tool designed to estimate 
@@ -64,7 +64,7 @@ This makes the model’s reasoning **transparent** — you can see *why* it pred
 4. Click **Explain Prediction** to visualize how each feature influenced the prediction.
 ---
 
-### 💡 **Goal of this Project**
+### 💡 **Goal of this app**
 
 This tool demonstrates how **machine learning** can assist researchers in understanding which factors most strongly affect CO₂ uptake performance in MOFs.
 
@@ -72,5 +72,6 @@ It’s not just a predictor, but also an **explainable AI** system for scientifi
 
 ---
 """)
+
 
 
