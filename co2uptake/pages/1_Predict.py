@@ -7,7 +7,7 @@ import xgboost as xgb
 import shap
 import matplotlib.pyplot as plt
 
-st.title("Predict CO2 Uptake")
+st.title("Predict CO₂ Uptake")
 
 #defining directory path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -142,3 +142,4 @@ elif mode == "manual":
 
         if st.button("Explain prediction"):
             explain_model(X_sample)
+
