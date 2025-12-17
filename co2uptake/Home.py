@@ -39,7 +39,7 @@ of the MOF.
 Simply predicting a value isn’t enough to trust a machine learning model.  
 That’s why this app goes one step further: it **explains the model’s decision**.
 
-After generating a prediction, you can click **“Explain Prediction”** to view a **SHAP Waterfall Plot**.
+After generating a prediction, you can click **“Explain Prediction”** to view the **Waterfall Plot**.
 
 ---
 
@@ -72,4 +72,5 @@ It’s not just a predictor, but also an **explainable AI** system for scientifi
 
 ---
 """)
+
 
